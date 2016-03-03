@@ -18,12 +18,20 @@
         <welcome-file>home.jsp</welcome-file>
     </welcome-file-list>
     <servlet>
-        <servlet-name>orders</servlet-name>
-        <servlet-class>com.twilio.etanotifications.servlets.OrdersServlet</servlet-class>
+        <servlet-name>order-index</servlet-name>
+        <servlet-class>com.twilio.etanotifications.servlets.OrderIndexServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>order-show</servlet-name>
+        <servlet-class>com.twilio.etanotifications.servlets.OrderShowServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>orders</servlet-name>
+        <servlet-name>order-index</servlet-name>
         <url-pattern>/orders</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>order-show</servlet-name>
+        <url-pattern>/order</url-pattern>
     </servlet-mapping>
 </web-app>

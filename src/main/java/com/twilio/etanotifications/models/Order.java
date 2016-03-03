@@ -22,4 +22,40 @@ public class Order {
 
   @Column(name = "notification_status")
   private String notificationStatus;
+
+  public int getId() {
+    return id;
+  }
+
+  public String getCustomerName() {
+    return customerName;
+  }
+
+  public void setCustomerName(String customerName) {
+    this.customerName = customerName;
+  }
+
+  public String getCustomerPhoneNumber() {
+    return customerPhoneNumber;
+  }
+
+  public void setCustomerPhoneNumber(String customerPhoneNumber) {
+    this.customerPhoneNumber = customerPhoneNumber;
+  }
+
+  public String getStatus() {
+    return status;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
+  public String getNotificationStatus() {
+    return notificationStatus;
+  }
+
+  public void setNotificationStatus(String notificationStatus) {
+    this.notificationStatus = notificationStatus;
+  }
 }

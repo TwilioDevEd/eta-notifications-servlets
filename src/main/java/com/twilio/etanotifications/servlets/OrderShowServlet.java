@@ -9,15 +9,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class OrdersServlet extends HttpServlet {
+public class OrderShowServlet extends HttpServlet {
   private final OrdersRepository repository;
 
   @SuppressWarnings("unused")
-  public OrdersServlet() {
+  public OrderShowServlet() {
     this(new OrdersRepository());
   }
 
-  public OrdersServlet(OrdersRepository repository) {
+  public OrderShowServlet(OrdersRepository repository) {
     this.repository = repository;
   }
 
@@ -25,9 +25,12 @@ public class OrdersServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
 
-    Iterable<Order> orders = repository.findAll();
+    String orderId = request.getParameter("id");
+    int id = Integer.parseInt(orderId);
 
-    request.setAttribute("orders", orders);
-    request.getRequestDispatcher("orders.jsp").forward(request, response);
+    Order order = repository.find(id);
+
+    request.setAttribute("order", order);
+    request.getRequestDispatcher("show.jsp").forward(request, response);
   }
 }
