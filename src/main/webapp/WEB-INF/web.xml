@@ -25,6 +25,10 @@
         <servlet-name>order-show</servlet-name>
         <servlet-class>com.twilio.etanotifications.servlets.OrderShowServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>order-pickup</servlet-name>
+        <servlet-class>com.twilio.etanotifications.servlets.OrderPickupServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>order-index</servlet-name>
@@ -33,5 +37,9 @@
     <servlet-mapping>
         <servlet-name>order-show</servlet-name>
         <url-pattern>/order</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>order-pickup</servlet-name>
+        <url-pattern>/order/pickup</url-pattern>
     </servlet-mapping>
 </web-app>

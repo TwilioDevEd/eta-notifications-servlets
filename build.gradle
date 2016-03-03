@@ -25,6 +25,7 @@ dependencies {
     compile 'kr.pe.kwonnam.jsp:jsp-template-inheritance:0.3.RELEASE'
     compile 'org.eclipse.persistence:eclipselink:2.6.1'
     compile 'org.postgresql:postgresql:9.4-1206-jdbc42'
+    compile 'com.twilio.sdk:twilio-java-sdk:6.3.0'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-all:1.10.19'
