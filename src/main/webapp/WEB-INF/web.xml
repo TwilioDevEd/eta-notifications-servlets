@@ -33,6 +33,10 @@
         <servlet-name>order-deliver</servlet-name>
         <servlet-class>com.twilio.etanotifications.servlets.OrderDeliverServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>notification-status</servlet-name>
+        <servlet-class>com.twilio.etanotifications.servlets.NotificationStatusServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>order-index</servlet-name>
@@ -49,5 +53,9 @@
     <servlet-mapping>
         <servlet-name>order-deliver</servlet-name>
         <url-pattern>/order/deliver</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>notification-status</servlet-name>
+        <url-pattern>/notification/status/update</url-pattern>
     </servlet-mapping>
 </web-app>
