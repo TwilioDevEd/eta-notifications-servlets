@@ -36,3 +36,9 @@ flyway {
     password = "$System.env.DB_PASSWORD"
     url = "$System.env.JDBC_URL"
 }
+
+task dbSeed(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    
+    main = 'com.twilio.etanotifications.DBSeeder'
+}
