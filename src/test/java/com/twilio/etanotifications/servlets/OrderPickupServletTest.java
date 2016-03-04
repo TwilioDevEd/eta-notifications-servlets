@@ -36,8 +36,8 @@ public class OrderPickupServletTest {
   }
 
   @Test
-  public void sendPickupNotificationTest() throws IOException, ServletException,
-      TwilioRestException {
+  public void sendPickupNotificationTest()
+      throws IOException, ServletException, TwilioRestException {
     OrderPickupServlet servlet = new OrderPickupServlet(ordersRepository, messageSenderMock);
 
     Order order = new Order("Vincent Vega", "+15551234567");
@@ -48,7 +48,7 @@ public class OrderPickupServletTest {
     when(requestMock.getRequestURI()).thenReturn("/some/path");
 
     servlet.doPost(requestMock, responseMock);
-
+    order = ordersRepository.find(order.getId());
     verify(messageSenderMock)
         .sendSMS(order.getCustomerPhoneNumber(), "Your laundry is done and on its way to you!",
             String.format("http://ngrok.io/notification/status/update?id=%d", order.getId()));

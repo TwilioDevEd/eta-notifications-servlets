@@ -36,7 +36,7 @@ public class OrderDeliverServlet extends HttpServlet {
     Order order = repository.find(id);
     order.setStatus("Delivered");
     order.setNotificationStatus("queued");
-    repository.update(order);
+    order = repository.update(order);
 
     String callbackUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "") +
         "/notification/status/update?id=" + order.getId();

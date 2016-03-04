@@ -10,20 +10,17 @@ import javax.persistence.Query;
 import java.util.HashMap;
 import java.util.Map;
 
-
 @SuppressWarnings("unused")
 public abstract class Repository<T> {
 
-  protected final EntityManager em;
   protected final Class<T> entityType;
+  protected Map<String, String> properties;
 
   public Repository(Class<T> entity) {
 
     entityType = entity;
 
-    Map<String, String> properties = getProperties();
-    em = Persistence.createEntityManagerFactory("eta-notifications", properties)
-        .createEntityManager();
+    properties = getProperties();
   }
 
   /**
@@ -33,16 +30,21 @@ public abstract class Repository<T> {
    */
   @SuppressWarnings("unchecked")
   public Iterable<T> findAll() {
+    EntityManager em = getEm();
     Query query = em.createQuery(String.format("SELECT e FROM %s e", entityType.getSimpleName()));
 
-    return query.getResultList();
+    Iterable<T> results = query.getResultList();
+    em.close();
+    return results;
   }
 
   public void deleteAll() {
+    EntityManager em = getEm();
+    EntityTransaction transaction = em.getTransaction();
     Query query = em.createQuery(String.format("DELETE FROM %s", entityType.getSimpleName()));
-    getTransaction().begin();
+    transaction.begin();
     query.executeUpdate();
-    getTransaction().commit();
+    transaction.commit();
   }
 
   /**
@@ -52,9 +54,10 @@ public abstract class Repository<T> {
    * @return the entity with the given id
    */
   public T find(int id) {
+    EntityManager em = getEm();
     T entity = em.find(entityType, id);
     em.refresh(entity);
-
+    em.close();
     return entity;
   }
 
@@ -65,10 +68,13 @@ public abstract class Repository<T> {
    * @return the saved entity
    */
   public T create(T entity) {
-    getTransaction().begin();
-    em.persist(entity);
-    getTransaction().commit();
+    EntityManager em = getEm();
+    EntityTransaction transaction = em.getTransaction();
 
+    transaction.begin();
+    em.persist(entity);
+    transaction.commit();
+    em.close();
     return entity;
   }
 
@@ -79,10 +85,13 @@ public abstract class Repository<T> {
    * @return the updated entity
    */
   public T update(T entity) {
-    getTransaction().begin();
-    T updatedEntity = em.merge(entity);
-    getTransaction().commit();
+    EntityManager em = getEm();
+    EntityTransaction transaction = em.getTransaction();
 
+    transaction.begin();
+    T updatedEntity = em.merge(entity);
+    transaction.commit();
+    em.close();
     return updatedEntity;
   }
 
@@ -92,13 +101,13 @@ public abstract class Repository<T> {
    * @param entity The entity
    */
   public void delete(T entity) {
-    getTransaction().begin();
-    em.remove(entity);
-    getTransaction().commit();
-  }
+    EntityManager em = getEm();
+    EntityTransaction transaction = em.getTransaction();
 
-  private EntityTransaction getTransaction() {
-    return em.getTransaction();
+    transaction.begin();
+    em.remove(entity);
+    transaction.commit();
+    em.close();
   }
 
   private Map<String, String> getProperties() {
@@ -114,5 +123,10 @@ public abstract class Repository<T> {
     }
 
     return config;
+  }
+
+  protected EntityManager getEm() {
+    return Persistence.createEntityManagerFactory("eta-notifications", properties)
+        .createEntityManager();
   }
 }

@@ -1,3 +1,13 @@
 language: java
 jdk:
 - oraclejdk8
+env:
+  global:
+  - JDBC_URL=jdbc:postgresql://localhost:5432/eta_notifications
+  - DB_USERNAME=postgres
+  - TWILIO_ACCOUNT_SID=ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  - TWILIO_AUTH_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  - TWILIO_NUMBER=+15552737123
+before_script:
+  - psql -c 'create database eta_notifications;' -U postgres
+  - ./gradlew flywayMigrate

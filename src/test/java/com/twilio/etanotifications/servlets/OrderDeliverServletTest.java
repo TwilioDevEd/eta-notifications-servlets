@@ -49,6 +49,7 @@ public class OrderDeliverServletTest {
 
     servlet.doPost(requestMock, responseMock);
 
+    order = ordersRepository.find(order.getId());
     verify(messageSenderMock)
         .sendSMS(order.getCustomerPhoneNumber(), "Your laundry is arriving now.",
             String.format("http://ngrok.io/notification/status/update?id=%d", order.getId()));
