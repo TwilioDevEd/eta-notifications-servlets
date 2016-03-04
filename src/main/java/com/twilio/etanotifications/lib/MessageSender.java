@@ -15,10 +15,6 @@ public class MessageSender {
   private TwilioRestClient client;
   private AppSetup appSetup;
 
-  public static MessageSender getMessageSender() {
-    return instance;
-  }
-
   public MessageSender() {
     this.appSetup = new AppSetup();
     try {
@@ -33,7 +29,12 @@ public class MessageSender {
     this.appSetup = appSetup;
   }
 
-  public int sendSMS(String toNumber, String messageBody, String callbackUrl) {
+  public static MessageSender getMessageSender() {
+    return instance;
+  }
+
+  public int sendSMS(String toNumber, String messageBody, String callbackUrl)
+      throws TwilioRestException {
     List<NameValuePair> params = new ArrayList<NameValuePair>();
     params.add(new BasicNameValuePair("To", toNumber));
     try {
@@ -46,12 +47,7 @@ public class MessageSender {
     params.add(new BasicNameValuePair("StatusCallback", callbackUrl));
 
     MessageFactory messageFactory = client.getAccount().getMessageFactory();
-    try {
-      messageFactory.create(params);
-    } catch (TwilioRestException e) {
-      e.printStackTrace();
-      return e.getErrorCode();
-    }
+    messageFactory.create(params);
 
     return 0;
   }

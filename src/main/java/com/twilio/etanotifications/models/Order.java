@@ -18,10 +18,17 @@ public class Order {
   private String customerPhoneNumber;
 
   @Column(name = "status")
-  private String status;
+  private String status = "Ready";
 
   @Column(name = "notification_status")
-  private String notificationStatus;
+  private String notificationStatus = "None";
+
+  public Order() {}
+
+  public Order(String customerName, String customerPhoneNumber) {
+    this.customerName = customerName;
+    this.customerPhoneNumber = customerPhoneNumber;
+  }
 
   public int getId() {
     return id;

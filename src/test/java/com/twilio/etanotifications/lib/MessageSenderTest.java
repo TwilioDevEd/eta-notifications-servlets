@@ -62,7 +62,7 @@ public class MessageSenderTest {
     assertEquals(0, success);
   }
 
-  @Test
+  @Test(expected = TwilioRestException.class)
   public void testReturnsErrorCode()
       throws UndefinedEnvironmentVariableException, TwilioRestException {
     MessageSender sender = new MessageSender(client, appSetup);
@@ -73,8 +73,6 @@ public class MessageSenderTest {
     when(messageFactory.create(anyList()))
         .thenThrow(new TwilioRestException("something is wrong!", 123));
 
-    int success = sender.sendSMS("to number", "message body", "some url");
-
-    assertEquals(123, success);
+    sender.sendSMS("to number", "message body", "some url");
   }
 }

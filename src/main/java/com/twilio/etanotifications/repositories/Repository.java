@@ -38,6 +38,13 @@ public abstract class Repository<T> {
     return query.getResultList();
   }
 
+  public void deleteAll() {
+    Query query = em.createQuery(String.format("DELETE FROM %s", entityType.getSimpleName()));
+    getTransaction().begin();
+    query.executeUpdate();
+    getTransaction().commit();
+  }
+
   /**
    * Retrieves an entity by its id.
    *

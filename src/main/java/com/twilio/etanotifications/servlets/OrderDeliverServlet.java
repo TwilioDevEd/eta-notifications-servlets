@@ -11,16 +11,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class OrderPickupServlet extends HttpServlet {
+public class OrderDeliverServlet extends HttpServlet {
   private final OrdersRepository repository;
   private final MessageSender messageSender;
 
   @SuppressWarnings("unused")
-  public OrderPickupServlet() {
+  public OrderDeliverServlet() {
     this(new OrdersRepository(), MessageSender.getMessageSender());
   }
 
-  public OrderPickupServlet(OrdersRepository repository, MessageSender messageSender) {
+  public OrderDeliverServlet(OrdersRepository repository, MessageSender messageSender) {
     this.repository = repository;
     this.messageSender = messageSender;
   }
@@ -29,30 +29,25 @@ public class OrderPickupServlet extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
 
-    String pickupMessage = "Your laundry is done and on its way to you!";
+    String pickupMessage = "Your laundry is arriving now.";
     String orderId = request.getParameter("id");
     int id = Integer.parseInt(orderId);
 
     Order order = repository.find(id);
-    order.setStatus("Shipped");
+    order.setStatus("Delivered");
     order.setNotificationStatus("queued");
     repository.update(order);
 
     String callbackUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "") +
         "/notification/status/update?id=" + order.getId();
 
-    int success = 0;
     try {
-      success = messageSender.sendSMS(order.getCustomerPhoneNumber(), pickupMessage, callbackUrl);
+      messageSender.sendSMS(order.getCustomerPhoneNumber(), pickupMessage, callbackUrl);
     } catch (TwilioRestException e) {
+      e.printStackTrace();
       throw new ServletException(e.getLocalizedMessage());
     }
 
-    if (success == 0) {
-      response.sendRedirect(String.format("/order?id=%d", id));
-    } else {
-      throw new ServletException(
-          String.format("An error occurred while sending the SMS. Error code: %d", success));
-    }
+    response.sendRedirect("/orders");
   }
 }
