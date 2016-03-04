@@ -1,5 +1,8 @@
 package com.twilio.etanotifications.repositories;
 
+import com.twilio.etanotifications.exceptions.UndefinedEnvironmentVariableException;
+import com.twilio.etanotifications.lib.AppSetup;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
@@ -92,20 +95,15 @@ public abstract class Repository<T> {
   }
 
   private Map<String, String> getProperties() {
-    Map<String, String> env = System.getenv();
+    AppSetup appSetup = new AppSetup();
     Map<String, String> config = new HashMap<>();
-    for (String key : env.keySet()) {
-      if (key.contains("JDBC_URL")) {
-        config.put("javax.persistence.jdbc.url", env.get(key));
-      }
-
-      if (key.contains("DB_USER")) {
-        config.put("javax.persistence.jdbc.user", env.get(key));
-      }
-
-      if (key.contains("DB_PASSWORD")) {
-        config.put("javax.persistence.jdbc.password", env.get(key));
-      }
+    try {
+      config.put("javax.persistence.jdbc.url", appSetup.getDbURL());
+      config.put("javax.persistence.jdbc.user", appSetup.getDatabaseUsername());
+      config.put("javax.persistence.jdbc.password", appSetup.getDatabasePassword());
+    } catch (UndefinedEnvironmentVariableException e) {
+      e.printStackTrace();
+      return null;
     }
 
     return config;

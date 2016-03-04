@@ -51,9 +51,9 @@ public class AppSetup {
   }
 
   public String getDatabaseUsername() throws UndefinedEnvironmentVariableException {
-    String username = env.get("DB_USER");
+    String username = env.get("DB_USERNAME");
     if (username == null) {
-      throw new UndefinedEnvironmentVariableException("DB_USER is not defined");
+      throw new UndefinedEnvironmentVariableException("DB_USERNAME is not defined");
     } else {
       return username;
     }
