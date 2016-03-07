@@ -7,6 +7,7 @@ ETA notifications implementation with Java - Servlets and Twilio.
 1. Clone this repository and `cd` into it
 
 1. Create the database
+
    _The application uses PostgreSQL as the persistence layer. If you
    don't have it already, you should install it. The easiest way is by
    using [Postgres.app](http://postgresapp.com/)._
@@ -28,6 +29,12 @@ ETA notifications implementation with Java - Servlets and Twilio.
   _If you are using a different operating system, make sure that all the
   variables from the `.env.example` file are loaded into your environment._
 
+  You can find your `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` under
+  [Twilio Account Settings](https://www.twilio.com/user/account/settings).
+
+  You can buy Twilio phone numbers at [Twilio numbers](https://www.twilio.com/user/account/phone-numbers/search).
+  `TWILIO_NUMBER` should be set to a phone number you have purchased.
+
 1. Execute the migrations.
   ```bash
   $ ./gradlew flywayMigrate
@@ -39,8 +46,8 @@ ETA notifications implementation with Java - Servlets and Twilio.
    the application to send sms notifications, you must edit this seed data providing
    a real phone number where you want the sms notifications to be received.
 
-   In order to do this, you must modify
-   [this file](https://github.com/TwilioDevEd/eta-notifications-servlets/blob/master/src/main/java/com/twilio/etanotifications/DBSeeder.java)
+   Modify the
+   [DBSeeder.java file](https://github.com/TwilioDevEd/eta-notifications-servlets/blob/master/src/main/java/com/twilio/etanotifications/DBSeeder.java)
    that is located at: `project_root/src/main/java/com/twilio/etanotifications/DBSeeder.java`
    
 1. Seed the database
@@ -50,6 +57,7 @@ ETA notifications implementation with Java - Servlets and Twilio.
    ```
 
 1. Expose your application to the wider internet using ngrok
+
    You can click
    [here](#expose-the-application-to-the-wider-internet) for more details. This step
    is important because the application won't work as expected if you run it through
@@ -65,7 +73,7 @@ ETA notifications implementation with Java - Servlets and Twilio.
   $ ./gradlew jettyRun
   ```
   Once Ngrok is running, open up your browser and go to your ngrok URL. It will
-  look like this: `http://9a159ccf.ngrok.io`
+  look like this: `http://<your_subdomain>.ngrok.io`
   
   That's it!
 
