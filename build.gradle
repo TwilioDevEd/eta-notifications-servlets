@@ -39,6 +39,6 @@ flyway {
 
 task dbSeed(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
-    
+
     main = 'com.twilio.etanotifications.DBSeeder'
 }
