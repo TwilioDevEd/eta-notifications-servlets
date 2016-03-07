@@ -35,7 +35,8 @@
     </servlet>
     <servlet>
         <servlet-name>notification-status</servlet-name>
-        <servlet-class>com.twilio.etanotifications.servlets.NotificationStatusServlet</servlet-class>
+        <servlet-class>com.twilio.etanotifications.servlets.NotificationStatusServlet
+        </servlet-class>
     </servlet>
 
     <servlet-mapping>

@@ -1,6 +1,5 @@
 package com.twilio.etanotifications.servlets;
 
-import com.twilio.etanotifications.lib.MessageSender;
 import com.twilio.etanotifications.models.Order;
 import com.twilio.etanotifications.repositories.OrdersRepository;
 import com.twilio.sdk.TwilioRestException;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class NotificationStatusServletTest {
