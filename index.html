@@ -1,0 +1,94 @@
+<!DOCTYPE html><html><head><title>ETA Notifications</title><style>body, html {
+  height:100%;
+  width:100%;
+  padding:0;
+  margin:0;
+  overflow:hidden;
+  background-color:#ddd;
+}
+.wrapper {
+  height:100%;
+  width:100%;
+}</style><link rel="shortcut icon" href="//twilio.com/bundles/marketing/img/favicons/favicon.ico"><link rel="apple-touch-icon" href="//twilio.com/bundles/marketing/img/favicons/favicon_57.png"><link rel="apple-touch-icon" sizes="72x72" href="//twilio.com/bundles/marketing/img/favicons/favicon_72.png"><link rel="apple-touch-icon" sizes="114x114" href="//twilio.com/bundles/marketing/img/favicons/favicon_114.png"><link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"><link rel="stylesheet" href="viewsaurus.css"></head><body><div class="wrapper"><div id="viewsaurus" data-title="ETA Notifications"><div class="saurus-panes"><div class="saurus-prose"><div class="saurus-prose-header"><div class="title-outer"><span class="step-title">ETA Notifications</span></div></div><div class="saurus-nav-buttons"><div class="saurus-nav-button nav-overview"><div class="saurus-nav-button-inner"><i class="fa fa-fw fa-list"></i></div><div class="nav-divider"></div></div><div class="saurus-nav-button nav-previous"><div class="saurus-nav-button-inner"><a href=""> <i class="fa fa-fw fa-play fa-rotate-180"></i></a></div><div class="nav-divider"></div></div><div class="saurus-nav-button nav-next clickable"><div class="saurus-nav-button-inner"><a href="#1"> <i class="fa fa-fw fa-play"></i></a></div></div><div class="saurus-next-title"><span class="next-title-inner"></span></div></div><div class="saurus-progress-bar"></div><div class="saurus-start"><p>In this tutorial, we will learn how to implement ETA Notifications using Java Servlets and Twilio</p><a href="#0">Start Tutorial</a></div><div class="saurus-content"><div data-title="ETA Notifications Servlets" class="chapter"><div data-title="What Are We Building?" data-file="src/main/resources/db/migration/V1__create_orders_table.sql" class="step"><h2 id="eta-notifications-laundry-on-demand">Eta Notifications - Laundry On-Demand</h2>
+<p><img src="http://howtodocs.s3.amazonaws.com/eta-notifications.png" alt="ETA Notifications"></p>
+<p>There are a wide range of businesses that deliver goods or services to
+their customers on-demand. Companies like Uber, TaskRabbit, and
+Instacart have built an entire industry around the fact that we, the
+customer, like to order things instantly, wherever we are. The key to
+those services working is notifying customers instantly when things
+change.</p>
+<p>In this tutorial, we&#39;ll build a notification system for Laundr.io, an
+on-demand laundry service.</p>
+<p>Let&#39;s get started!</p>
+</div><div data-title="Trigger the Notifications" data-file="src/main/java/com/twilio/etanotifications/servlets/OrderDeliverServlet.java" data-highlight="32-51" class="step"><h2 id="trigger-the-notifications">Trigger the Notifications</h2>
+<p>This screen shows two buttons that allow the laundry delivery person to
+trigger notifications. There are two cases we&#39;d like to handle:</p>
+<ol>
+<li><p>Delivery person picks up laundry to be delivered.</p>
+</li>
+<li><p>Delivery person is arriving to the customer&#39;s house.</p>
+</li>
+</ol>
+<p>In a production app we would probably trigger the second notification
+when the delivery person was physically near the customer, using GPS. In
+this case we&#39;ll just use a button.</p>
+<p>Now, on the server we&#39;re going to use the Twilio API Client to actually
+send out the notifications.</p>
+</div><div data-title="Setting up the Twilio REST Client" data-file="src/main/java/com/twilio/etanotifications/lib/MessageSender.java" data-highlight="19-24" class="step"><h2 id="setting-up-the-twilio-rest-client">Setting up the Twilio REST Client</h2>
+<p>Here we create a helper class with an authenticated Twilio REST API
+client that we can use anytime we need to send a text message. We
+initialize it with our <a href="//www.twilio.com/user/account/settings">Twilio Account
+Credentials</a> stored
+as environment variables.</p>
+<hr>
+<p><strong>See Also:</strong></p>
+<ul>
+<li><a href="//www.twilio.com/docs/quickstart/ruby/sms/sending-via-rest">Twilio SMS and MMS Quickstart</a></li>
+</ul>
+</div><div data-title="Handling the Notification Trigger" data-file="src/main/java/com/twilio/etanotifications/servlets/OrderPickupServlet.java" data-highlight="29-57" class="step"><h2 id="handling-the-notification-trigger">Handling the Notification Trigger</h2>
+<p>This code handles the HTTP <code>POST</code> request triggered by the delivery
+person. It uses our <code>MessageSender</code> class to send an SMS message to the
+customer&#39;s phone number, which we have registered in our database.</p>
+<p>Next let&#39;s look closer at how we send the SMS.</p>
+</div><div data-title="Sending the Message" data-file="src/main/java/com/twilio/etanotifications/lib/MessageSender.java" data-highlight="38-50" class="step"><h2 id="sending-the-message">Sending the Message</h2>
+<p>Here is how we actually send the SMS. If we want to improve
+the message we can send a picture of the laundry by adding:</p>
+<pre><code>params.add(new BasicNameValuePair(&quot;MediaUrl&quot;, &quot;http://lorempixel.com/image_output/fashion-q-c-640-480-1.jpg&quot;));
+</code></pre><p>In addition to the required parameters, we can pass a <code>StatusCallback</code>
+url to let us know if the message was delivered. Let&#39;s take a closer
+look at how this works.</p>
+</div><div data-title="Handling the Twilio Callback" data-file="src/main/java/com/twilio/etanotifications/servlets/NotificationStatusServlet.java" data-highlight="30-36" class="step"><h2 id="handling-the-twilio-callback">Handling the Twilio Callback</h2>
+<p>Twilio will make a post request to this servlet, each time our message status changes to one
+of the following: queued, failed, sent, delivered, or undelivered.</p>
+<p>We then update this <code>notificationStatus</code> on the <code>Order</code> so that we can decide what to do next
+with it. This is a great place to add logic that would resend the message or send out an
+<a href="//www.twilio.com/docs/tutorials/walkthrough/automated-survey/java/spring">automated survey</a>.</p>
+<hr>
+<p><strong>See Also:</strong></p>
+<ul>
+<li><a href="//www.twilio.com/docs/api/rest/sending-messages#status-callback-parameter-request-parameters">Message Status</a></li>
+</ul>
+</div><div class="step"><h2 id="where-to-next-">Where to next?</h2>
+<p>That&#39;s it! We&#39;ve just implemented an on-demand notification service that alerts our customers when their order is arriving. If you&#39;re a
+Servlet developer working with Twilio, you might want to check out these
+other tutorials.</p>
+<p><a href="//www.twilio.com/docs/tutorials/walkthrough/workflow-automation/java/servlets"><strong>Workflow Automation</strong></a></p>
+<p>Increase your rate of response by automating the workflows that are key
+to your business. In this tutorial, learn how to build a ready-for-scale
+automated SMS workflow, for a vacation rental company.</p>
+<p><a href="//www.twilio.com/docs/tutorials/walkthrough/masked-numbers/java/servlets"><strong>Masked Numbers</strong></a></p>
+<p>Protect your users&#39; privacy by anonymously connecting them with Twilio
+Voice and SMS. Learn how to create disposable phone numbers on-demand,
+so two users can communicate without exchanging personal information.</p>
+<h3 id="did-this-help-">Did this help?</h3>
+<p>Thanks for checking out this tutorial! If you have any feedback
+to share with us, we&#39;d love to hear it.
+<a href="//www.twilio.com/help/contact">Contact support</a> to let us know what you think.</p>
+</div></div>
+<div class="saurus-files" style="display:none;"><textarea class="saurus-file" data-file="src/main/resources/db/migration/V1__create_orders_table.sql" data-mode="sql">Y3JlYXRlIHRhYmxlIG9yZGVycyAoCiAgaWQgU0VSSUFMIFVOSVFVRSBub3QgbnVsbCBQUklNQVJZIEtFWSwKICBjdXN0b21lcl9uYW1lIHZhcmNoYXIoMTAwKSBub3QgbnVsbCwKICBjdXN0b21lcl9waG9uZV9udW1iZXIgdmFyY2hhcigxNSkgbm90IG51bGwsCiAgc3RhdHVzIHZhcmNoYXIoMTUpIG5vdCBudWxsIGRlZmF1bHQgJ1JlYWR5JywKICBub3RpZmljYXRpb25fc3RhdHVzIHZhcmNoYXIoMTUpIG5vdCBudWxsIGRlZmF1bHQgJ05vbmUnCik7Cg==</textarea>
+<textarea class="saurus-file" data-file="src/main/java/com/twilio/etanotifications/servlets/OrderDeliverServlet.java" data-mode="java">cGFja2FnZSBjb20udHdpbGlvLmV0YW5vdGlmaWNhdGlvbnMuc2VydmxldHM7CgppbXBvcnQgY29tLnR3aWxpby5ldGFub3RpZmljYXRpb25zLmxpYi5NZXNzYWdlU2VuZGVyOwppbXBvcnQgY29tLnR3aWxpby5ldGFub3RpZmljYXRpb25zLm1vZGVscy5PcmRlcjsKaW1wb3J0IGNvbS50d2lsaW8uZXRhbm90aWZpY2F0aW9ucy5yZXBvc2l0b3JpZXMuT3JkZXJzUmVwb3NpdG9yeTsKaW1wb3J0IGNvbS50d2lsaW8uc2RrLlR3aWxpb1Jlc3RFeGNlcHRpb247CgppbXBvcnQgamF2YXguc2VydmxldC5TZXJ2bGV0RXhjZXB0aW9uOwppbXBvcnQgamF2YXguc2VydmxldC5odHRwLkh0dHBTZXJ2bGV0OwppbXBvcnQgamF2YXguc2VydmxldC5odHRwLkh0dHBTZXJ2bGV0UmVxdWVzdDsKaW1wb3J0IGphdmF4LnNlcnZsZXQuaHR0cC5IdHRwU2VydmxldFJlc3BvbnNlOwppbXBvcnQgamF2YS5pby5JT0V4Y2VwdGlvbjsKCnB1YmxpYyBjbGFzcyBPcmRlckRlbGl2ZXJTZXJ2bGV0IGV4dGVuZHMgSHR0cFNlcnZsZXQgewogIHByaXZhdGUgZmluYWwgT3JkZXJzUmVwb3NpdG9yeSByZXBvc2l0b3J5OwogIHByaXZhdGUgZmluYWwgTWVzc2FnZVNlbmRlciBtZXNzYWdlU2VuZGVyOwoKICBAU3VwcHJlc3NXYXJuaW5ncygidW51c2VkIikKICBwdWJsaWMgT3JkZXJEZWxpdmVyU2VydmxldCgpIHsKICAgIHRoaXMobmV3IE9yZGVyc1JlcG9zaXRvcnkoKSwgTWVzc2FnZVNlbmRlci5nZXRNZXNzYWdlU2VuZGVyKCkpOwogIH0KCiAgcHVibGljIE9yZGVyRGVsaXZlclNlcnZsZXQoT3JkZXJzUmVwb3NpdG9yeSByZXBvc2l0b3J5LCBNZXNzYWdlU2VuZGVyIG1lc3NhZ2VTZW5kZXIpIHsKICAgIHRoaXMucmVwb3NpdG9yeSA9IHJlcG9zaXRvcnk7CiAgICB0aGlzLm1lc3NhZ2VTZW5kZXIgPSBtZXNzYWdlU2VuZGVyOwogIH0KCiAgQE92ZXJyaWRlCiAgcHJvdGVjdGVkIHZvaWQgZG9Qb3N0KEh0dHBTZXJ2bGV0UmVxdWVzdCByZXF1ZXN0LCBIdHRwU2VydmxldFJlc3BvbnNlIHJlc3BvbnNlKQogICAgICB0aHJvd3MgSU9FeGNlcHRpb24sIFNlcnZsZXRFeGNlcHRpb24gewoKICAgIFN0cmluZyBwaWNrdXBNZXNzYWdlID0gIllvdXIgbGF1bmRyeSBpcyBhcnJpdmluZyBub3cuIjsKICAgIFN0cmluZyBvcmRlcklkID0gcmVxdWVzdC5nZXRQYXJhbWV0ZXIoImlkIik7CiAgICBpbnQgaWQgPSBJbnRlZ2VyLnBhcnNlSW50KG9yZGVySWQpOwoKICAgIE9yZGVyIG9yZGVyID0gcmVwb3NpdG9yeS5maW5kKGlkKTsKICAgIG9yZGVyLnNldFN0YXR1cygiRGVsaXZlcmVkIik7CiAgICBvcmRlci5zZXROb3RpZmljYXRpb25TdGF0dXMoInF1ZXVlZCIpOwogICAgb3JkZXIgPSByZXBvc2l0b3J5LnVwZGF0ZShvcmRlcik7CgogICAgU3RyaW5nIGNhbGxiYWNrVXJsID0gcmVxdWVzdC5nZXRSZXF1ZXN0VVJMKCkudG9TdHJpbmcoKS5yZXBsYWNlKHJlcXVlc3QuZ2V0UmVxdWVzdFVSSSgpLCAiIikgKwogICAgICAgICIvbm90aWZpY2F0aW9uL3N0YXR1cy91cGRhdGU/aWQ9IiArIG9yZGVyLmdldElkKCk7CgogICAgdHJ5IHsKICAgICAgbWVzc2FnZVNlbmRlci5zZW5kU01TKG9yZGVyLmdldEN1c3RvbWVyUGhvbmVOdW1iZXIoKSwgcGlja3VwTWVzc2FnZSwgY2FsbGJhY2tVcmwpOwogICAgfSBjYXRjaCAoVHdpbGlvUmVzdEV4Y2VwdGlvbiBlKSB7CiAgICAgIGUucHJpbnRTdGFja1RyYWNlKCk7CiAgICAgIHRocm93IG5ldyBTZXJ2bGV0RXhjZXB0aW9uKGUuZ2V0TG9jYWxpemVkTWVzc2FnZSgpKTsKICAgIH0KCiAgICByZXNwb25zZS5zZW5kUmVkaXJlY3QoIi9vcmRlcnMiKTsKICB9Cn0K</textarea>
+<textarea class="saurus-file" data-file="src/main/java/com/twilio/etanotifications/lib/MessageSender.java" data-mode="java">cGFja2FnZSBjb20udHdpbGlvLmV0YW5vdGlmaWNhdGlvbnMubGliOwoKaW1wb3J0IGNvbS50d2lsaW8uZXRhbm90aWZpY2F0aW9ucy5leGNlcHRpb25zLlVuZGVmaW5lZEVudmlyb25tZW50VmFyaWFibGVFeGNlcHRpb247CmltcG9ydCBjb20udHdpbGlvLnNkay5Ud2lsaW9SZXN0Q2xpZW50OwppbXBvcnQgY29tLnR3aWxpby5zZGsuVHdpbGlvUmVzdEV4Y2VwdGlvbjsKaW1wb3J0IGNvbS50d2lsaW8uc2RrLnJlc291cmNlLmZhY3RvcnkuTWVzc2FnZUZhY3Rvcnk7CmltcG9ydCBvcmcuYXBhY2hlLmh0dHAuTmFtZVZhbHVlUGFpcjsKaW1wb3J0IG9yZy5hcGFjaGUuaHR0cC5tZXNzYWdlLkJhc2ljTmFtZVZhbHVlUGFpcjsKCmltcG9ydCBqYXZhLnV0aWwuQXJyYXlMaXN0OwppbXBvcnQgamF2YS51dGlsLkxpc3Q7CgpwdWJsaWMgY2xhc3MgTWVzc2FnZVNlbmRlciB7CiAgcHJpdmF0ZSBzdGF0aWMgTWVzc2FnZVNlbmRlciBpbnN0YW5jZSA9IG5ldyBNZXNzYWdlU2VuZGVyKCk7CiAgcHJpdmF0ZSBUd2lsaW9SZXN0Q2xpZW50IGNsaWVudDsKICBwcml2YXRlIEFwcFNldHVwIGFwcFNldHVwOwoKICBwdWJsaWMgTWVzc2FnZVNlbmRlcigpIHsKICAgIHRoaXMuYXBwU2V0dXAgPSBuZXcgQXBwU2V0dXAoKTsKICAgIHRyeSB7CiAgICAgIHRoaXMuY2xpZW50ID0gbmV3IFR3aWxpb1Jlc3RDbGllbnQoYXBwU2V0dXAuZ2V0QWNjb3VudFNpZCgpLCBhcHBTZXR1cC5nZXRBdXRoVG9rZW4oKSk7CiAgICB9IGNhdGNoIChVbmRlZmluZWRFbnZpcm9ubWVudFZhcmlhYmxlRXhjZXB0aW9uIGUpIHsKICAgICAgZS5wcmludFN0YWNrVHJhY2UoKTsKICAgIH0KICB9CgogIHB1YmxpYyBNZXNzYWdlU2VuZGVyKFR3aWxpb1Jlc3RDbGllbnQgY2xpZW50LCBBcHBTZXR1cCBhcHBTZXR1cCkgewogICAgdGhpcy5jbGllbnQgPSBjbGllbnQ7CiAgICB0aGlzLmFwcFNldHVwID0gYXBwU2V0dXA7CiAgfQoKICBwdWJsaWMgc3RhdGljIE1lc3NhZ2VTZW5kZXIgZ2V0TWVzc2FnZVNlbmRlcigpIHsKICAgIHJldHVybiBpbnN0YW5jZTsKICB9CgogIHB1YmxpYyBpbnQgc2VuZFNNUyhTdHJpbmcgdG9OdW1iZXIsIFN0cmluZyBtZXNzYWdlQm9keSwgU3RyaW5nIGNhbGxiYWNrVXJsKQogICAgICB0aHJvd3MgVHdpbGlvUmVzdEV4Y2VwdGlvbiB7CiAgICBMaXN0PE5hbWVWYWx1ZVBhaXI+IHBhcmFtcyA9IG5ldyBBcnJheUxpc3Q8TmFtZVZhbHVlUGFpcj4oKTsKICAgIHBhcmFtcy5hZGQobmV3IEJhc2ljTmFtZVZhbHVlUGFpcigiVG8iLCB0b051bWJlcikpOwogICAgdHJ5IHsKICAgICAgcGFyYW1zLmFkZChuZXcgQmFzaWNOYW1lVmFsdWVQYWlyKCJGcm9tIiwgYXBwU2V0dXAuZ2V0VHdpbGlvTnVtYmVyKCkpKTsKICAgIH0gY2F0Y2ggKFVuZGVmaW5lZEVudmlyb25tZW50VmFyaWFibGVFeGNlcHRpb24gZSkgewogICAgICBlLnByaW50U3RhY2tUcmFjZSgpOwogICAgICByZXR1cm4gMTsKICAgIH0KICAgIHBhcmFtcy5hZGQobmV3IEJhc2ljTmFtZVZhbHVlUGFpcigiQm9keSIsIG1lc3NhZ2VCb2R5KSk7CiAgICBwYXJhbXMuYWRkKG5ldyBCYXNpY05hbWVWYWx1ZVBhaXIoIlN0YXR1c0NhbGxiYWNrIiwgY2FsbGJhY2tVcmwpKTsKCiAgICBNZXNzYWdlRmFjdG9yeSBtZXNzYWdlRmFjdG9yeSA9IGNsaWVudC5nZXRBY2NvdW50KCkuZ2V0TWVzc2FnZUZhY3RvcnkoKTsKICAgIG1lc3NhZ2VGYWN0b3J5LmNyZWF0ZShwYXJhbXMpOwoKICAgIHJldHVybiAwOwogIH0KfQo=</textarea>
+<textarea class="saurus-file" data-file="src/main/java/com/twilio/etanotifications/servlets/OrderPickupServlet.java" data-mode="java">cGFja2FnZSBjb20udHdpbGlvLmV0YW5vdGlmaWNhdGlvbnMuc2VydmxldHM7CgppbXBvcnQgY29tLnR3aWxpby5ldGFub3RpZmljYXRpb25zLmxpYi5NZXNzYWdlU2VuZGVyOwppbXBvcnQgY29tLnR3aWxpby5ldGFub3RpZmljYXRpb25zLm1vZGVscy5PcmRlcjsKaW1wb3J0IGNvbS50d2lsaW8uZXRhbm90aWZpY2F0aW9ucy5yZXBvc2l0b3JpZXMuT3JkZXJzUmVwb3NpdG9yeTsKaW1wb3J0IGNvbS50d2lsaW8uc2RrLlR3aWxpb1Jlc3RFeGNlcHRpb247CgppbXBvcnQgamF2YXguc2VydmxldC5TZXJ2bGV0RXhjZXB0aW9uOwppbXBvcnQgamF2YXguc2VydmxldC5odHRwLkh0dHBTZXJ2bGV0OwppbXBvcnQgamF2YXguc2VydmxldC5odHRwLkh0dHBTZXJ2bGV0UmVxdWVzdDsKaW1wb3J0IGphdmF4LnNlcnZsZXQuaHR0cC5IdHRwU2VydmxldFJlc3BvbnNlOwppbXBvcnQgamF2YS5pby5JT0V4Y2VwdGlvbjsKCnB1YmxpYyBjbGFzcyBPcmRlclBpY2t1cFNlcnZsZXQgZXh0ZW5kcyBIdHRwU2VydmxldCB7CiAgcHJpdmF0ZSBmaW5hbCBPcmRlcnNSZXBvc2l0b3J5IHJlcG9zaXRvcnk7CiAgcHJpdmF0ZSBmaW5hbCBNZXNzYWdlU2VuZGVyIG1lc3NhZ2VTZW5kZXI7CgogIEBTdXBwcmVzc1dhcm5pbmdzKCJ1bnVzZWQiKQogIHB1YmxpYyBPcmRlclBpY2t1cFNlcnZsZXQoKSB7CiAgICB0aGlzKG5ldyBPcmRlcnNSZXBvc2l0b3J5KCksIE1lc3NhZ2VTZW5kZXIuZ2V0TWVzc2FnZVNlbmRlcigpKTsKICB9CgogIHB1YmxpYyBPcmRlclBpY2t1cFNlcnZsZXQoT3JkZXJzUmVwb3NpdG9yeSByZXBvc2l0b3J5LCBNZXNzYWdlU2VuZGVyIG1lc3NhZ2VTZW5kZXIpIHsKICAgIHRoaXMucmVwb3NpdG9yeSA9IHJlcG9zaXRvcnk7CiAgICB0aGlzLm1lc3NhZ2VTZW5kZXIgPSBtZXNzYWdlU2VuZGVyOwogIH0KCiAgQE92ZXJyaWRlCiAgcHJvdGVjdGVkIHZvaWQgZG9Qb3N0KEh0dHBTZXJ2bGV0UmVxdWVzdCByZXF1ZXN0LCBIdHRwU2VydmxldFJlc3BvbnNlIHJlc3BvbnNlKQogICAgICB0aHJvd3MgSU9FeGNlcHRpb24sIFNlcnZsZXRFeGNlcHRpb24gewoKICAgIFN0cmluZyBwaWNrdXBNZXNzYWdlID0gIllvdXIgbGF1bmRyeSBpcyBkb25lIGFuZCBvbiBpdHMgd2F5IHRvIHlvdSEiOwogICAgU3RyaW5nIG9yZGVySWQgPSByZXF1ZXN0LmdldFBhcmFtZXRlcigiaWQiKTsKICAgIGludCBpZCA9IEludGVnZXIucGFyc2VJbnQob3JkZXJJZCk7CgogICAgT3JkZXIgb3JkZXIgPSByZXBvc2l0b3J5LmZpbmQoaWQpOwogICAgb3JkZXIuc2V0U3RhdHVzKCJTaGlwcGVkIik7CiAgICBvcmRlci5zZXROb3RpZmljYXRpb25TdGF0dXMoInF1ZXVlZCIpOwogICAgb3JkZXIgPSByZXBvc2l0b3J5LnVwZGF0ZShvcmRlcik7CgogICAgU3RyaW5nIGNhbGxiYWNrVXJsID0gcmVxdWVzdC5nZXRSZXF1ZXN0VVJMKCkudG9TdHJpbmcoKS5yZXBsYWNlKHJlcXVlc3QuZ2V0UmVxdWVzdFVSSSgpLCAiIikgKwogICAgICAgICIvbm90aWZpY2F0aW9uL3N0YXR1cy91cGRhdGU/aWQ9IiArIG9yZGVyLmdldElkKCk7CgogICAgaW50IHN1Y2Nlc3MgPSAwOwogICAgdHJ5IHsKICAgICAgc3VjY2VzcyA9IG1lc3NhZ2VTZW5kZXIuc2VuZFNNUyhvcmRlci5nZXRDdXN0b21lclBob25lTnVtYmVyKCksIHBpY2t1cE1lc3NhZ2UsIGNhbGxiYWNrVXJsKTsKICAgIH0gY2F0Y2ggKFR3aWxpb1Jlc3RFeGNlcHRpb24gZSkgewogICAgICB0aHJvdyBuZXcgU2VydmxldEV4Y2VwdGlvbihlLmdldExvY2FsaXplZE1lc3NhZ2UoKSk7CiAgICB9CgogICAgaWYgKHN1Y2Nlc3MgPT0gMCkgewogICAgICByZXNwb25zZS5zZW5kUmVkaXJlY3QoU3RyaW5nLmZvcm1hdCgiL29yZGVyP2lkPSVkIiwgaWQpKTsKICAgIH0gZWxzZSB7CiAgICAgIHRocm93IG5ldyBTZXJ2bGV0RXhjZXB0aW9uKAogICAgICAgICAgU3RyaW5nLmZvcm1hdCgiQW4gZXJyb3Igb2NjdXJyZWQgd2hpbGUgc2VuZGluZyB0aGUgU01TLiBFcnJvciBjb2RlOiAlZCIsIHN1Y2Nlc3MpKTsKICAgIH0KICB9Cn0K</textarea>
+<textarea class="saurus-file" data-file="src/main/java/com/twilio/etanotifications/servlets/NotificationStatusServlet.java" data-mode="java">cGFja2FnZSBjb20udHdpbGlvLmV0YW5vdGlmaWNhdGlvbnMuc2VydmxldHM7CgppbXBvcnQgY29tLnR3aWxpby5ldGFub3RpZmljYXRpb25zLmxpYi5NZXNzYWdlU2VuZGVyOwppbXBvcnQgY29tLnR3aWxpby5ldGFub3RpZmljYXRpb25zLm1vZGVscy5PcmRlcjsKaW1wb3J0IGNvbS50d2lsaW8uZXRhbm90aWZpY2F0aW9ucy5yZXBvc2l0b3JpZXMuT3JkZXJzUmVwb3NpdG9yeTsKaW1wb3J0IGNvbS50d2lsaW8uc2RrLlR3aWxpb1Jlc3RFeGNlcHRpb247CgppbXBvcnQgamF2YXguc2VydmxldC5TZXJ2bGV0RXhjZXB0aW9uOwppbXBvcnQgamF2YXguc2VydmxldC5odHRwLkh0dHBTZXJ2bGV0OwppbXBvcnQgamF2YXguc2VydmxldC5odHRwLkh0dHBTZXJ2bGV0UmVxdWVzdDsKaW1wb3J0IGphdmF4LnNlcnZsZXQuaHR0cC5IdHRwU2VydmxldFJlc3BvbnNlOwppbXBvcnQgamF2YS5pby5JT0V4Y2VwdGlvbjsKCnB1YmxpYyBjbGFzcyBOb3RpZmljYXRpb25TdGF0dXNTZXJ2bGV0IGV4dGVuZHMgSHR0cFNlcnZsZXQgewogIHByaXZhdGUgZmluYWwgT3JkZXJzUmVwb3NpdG9yeSByZXBvc2l0b3J5OwoKICBAU3VwcHJlc3NXYXJuaW5ncygidW51c2VkIikKICBwdWJsaWMgTm90aWZpY2F0aW9uU3RhdHVzU2VydmxldCgpIHsKICAgIHRoaXMobmV3IE9yZGVyc1JlcG9zaXRvcnkoKSk7CiAgfQoKICBwdWJsaWMgTm90aWZpY2F0aW9uU3RhdHVzU2VydmxldChPcmRlcnNSZXBvc2l0b3J5IHJlcG9zaXRvcnkpIHsKICAgIHRoaXMucmVwb3NpdG9yeSA9IHJlcG9zaXRvcnk7CiAgfQoKICBAT3ZlcnJpZGUKICBwcm90ZWN0ZWQgdm9pZCBkb1Bvc3QoSHR0cFNlcnZsZXRSZXF1ZXN0IHJlcXVlc3QsIEh0dHBTZXJ2bGV0UmVzcG9uc2UgcmVzcG9uc2UpCiAgICAgIHRocm93cyBJT0V4Y2VwdGlvbiwgU2VydmxldEV4Y2VwdGlvbiB7CgogICAgU3RyaW5nIG9yZGVySWQgPSByZXF1ZXN0LmdldFBhcmFtZXRlcigiaWQiKTsKICAgIFN0cmluZyBzdGF0dXMgPSByZXF1ZXN0LmdldFBhcmFtZXRlcigiTWVzc2FnZVN0YXR1cyIpOwogICAgaW50IGlkID0gSW50ZWdlci5wYXJzZUludChvcmRlcklkKTsKCiAgICBPcmRlciBvcmRlciA9IHJlcG9zaXRvcnkuZmluZChpZCk7CiAgICBvcmRlci5zZXROb3RpZmljYXRpb25TdGF0dXMoc3RhdHVzKTsKICAgIHJlcG9zaXRvcnkudXBkYXRlKG9yZGVyKTsKICB9Cn0K</textarea>
+</div>
+</div><div class="saurus-overview"><ul></ul></div></div><div class="saurus-code"><div class="file-path"><span class="crumb-container"></span><i class="fa fa-fw fa-folder"></i></div><div class="saurus-editor"></div></div><div class="saurus-explorer"><div class="saurus-file-list"></div><a href="https://github.com/TwilioDevEd/eta-notifications-servlets" target="_blank" class="explorer-get-code"> <i class="fa fa-lg fa-github-square"> </i>View Code on GitHub</a></div></div></div></div><script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script><script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script><script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js"></script><script src="ace/ace.js"></script><script src="ace/theme-monokai.js"></script><script src="viewsaurus.js"></script></body></html>
