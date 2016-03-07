@@ -29,11 +29,11 @@ ETA notifications implementation with Java - Servlets and Twilio.
   _If you are using a different operating system, make sure that all the
   variables from the `.env.example` file are loaded into your environment._
 
-  You can find your `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` under
+  You can find your `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` here
   [Twilio Account Settings](https://www.twilio.com/user/account/settings).
 
   You can buy Twilio phone numbers at [Twilio numbers](https://www.twilio.com/user/account/phone-numbers/search).
-  `TWILIO_NUMBER` should be set to a phone number you have purchased.
+  Your `TWILIO_NUMBER` should be set to a phone number you have purchased.
 
 1. Execute the migrations.
   ```bash
@@ -42,14 +42,14 @@ ETA notifications implementation with Java - Servlets and Twilio.
 
 1. Modify seed data
 
-   We have provided an example name and phone number in the seed data. In order for
+   We have provided an example of name and phone number in the seed data. In order for
    the application to send sms notifications, you must edit this seed data providing
    a real phone number where you want the sms notifications to be received.
 
    Modify the
    [DBSeeder.java file](https://github.com/TwilioDevEd/eta-notifications-servlets/blob/master/src/main/java/com/twilio/etanotifications/DBSeeder.java)
    that is located at: `project_root/src/main/java/com/twilio/etanotifications/DBSeeder.java`
-   
+
 1. Seed the database
 
    ```bash
@@ -74,7 +74,7 @@ ETA notifications implementation with Java - Servlets and Twilio.
   ```
   Once Ngrok is running, open up your browser and go to your ngrok URL. It will
   look like this: `http://<your_subdomain>.ngrok.io`
-  
+
   That's it!
 
 ## Expose the Application to the Wider Internet
