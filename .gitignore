@@ -3,6 +3,7 @@ build/
 .idea
 *.iml
 .env
+*.DS_Store
 
 # Ignore Gradle GUI config
 gradle-app.setting
