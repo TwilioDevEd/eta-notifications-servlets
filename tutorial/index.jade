@@ -22,7 +22,7 @@
   .step(
     data-title="Trigger the Notifications",
     data-file='src/main/java/com/twilio/etanotifications/servlets/OrderDeliverServlet.java'
-    data-highlight='32-51')
+    data-highlight='31-45')
     :markdown
       ## Trigger the Notifications
 
@@ -43,7 +43,7 @@
   .step(
     data-title='Setting up the Twilio REST Client',
     data-file='src/main/java/com/twilio/etanotifications/lib/MessageSender.java',
-    data-highlight='19-24')
+    data-highlight='13-14')
     :markdown
       ## Setting up the Twilio REST Client
 
@@ -61,7 +61,7 @@
   .step(
     data-title='Handling the Notification Trigger',
     data-file='src/main/java/com/twilio/etanotifications/servlets/OrderPickupServlet.java',
-    data-highlight='29-57')
+    data-highlight='28-56')
     :markdown
       ## Handling the Notification Trigger
 
@@ -74,7 +74,7 @@
   .step(
     data-title='Sending the Message',
     data-file='src/main/java/com/twilio/etanotifications/lib/MessageSender.java',
-    data-highlight='38-50')
+    data-highlight='28-32')
     :markdown
       ## Sending the Message
 
@@ -82,7 +82,7 @@
       the message we can send a picture of the laundry by adding:
 
       ```
-      params.add(new BasicNameValuePair("MediaUrl", "http://lorempixel.com/image_output/fashion-q-c-640-480-1.jpg"));
+      .setMediaUrl("http://lorempixel.com/image_output/fashion-q-c-640-480-1.jpg")
       ```
 
       In addition to the required parameters, we can pass a `StatusCallback`
@@ -92,7 +92,7 @@
   .step(
     data-title='Handling the Twilio Callback',
     data-file='src/main/java/com/twilio/etanotifications/servlets/NotificationStatusServlet.java',
-    data-highlight='30-36')
+    data-highlight='25-35')
     :markdown
       ## Handling the Twilio Callback
 
