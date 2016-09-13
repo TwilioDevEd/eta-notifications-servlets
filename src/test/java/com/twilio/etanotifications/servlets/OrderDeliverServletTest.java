@@ -3,7 +3,6 @@ package com.twilio.etanotifications.servlets;
 import com.twilio.etanotifications.lib.MessageSender;
 import com.twilio.etanotifications.models.Order;
 import com.twilio.etanotifications.repositories.OrdersRepository;
-import com.twilio.sdk.TwilioRestException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -37,7 +36,7 @@ public class OrderDeliverServletTest {
 
   @Test
   public void sendDeliverNotificationTest()
-      throws IOException, ServletException, TwilioRestException {
+      throws IOException, ServletException {
     OrderDeliverServlet servlet = new OrderDeliverServlet(ordersRepository, messageSenderMock);
 
     Order order = new Order("Vincent Vega", "+15551234567");

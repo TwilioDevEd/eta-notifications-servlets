@@ -1,14 +1,8 @@
 package com.twilio.etanotifications.lib;
 
-import com.twilio.etanotifications.exceptions.UndefinedEnvironmentVariableException;
-import com.twilio.sdk.TwilioRestClient;
-import com.twilio.sdk.TwilioRestException;
-import com.twilio.sdk.resource.factory.MessageFactory;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.twilio.http.TwilioRestClient;
+import com.twilio.rest.api.v2010.account.MessageCreator;
+import com.twilio.type.PhoneNumber;
 
 public class MessageSender {
   private static MessageSender instance = new MessageSender();
@@ -17,11 +11,7 @@ public class MessageSender {
 
   public MessageSender() {
     this.appSetup = new AppSetup();
-    try {
-      this.client = new TwilioRestClient(appSetup.getAccountSid(), appSetup.getAuthToken());
-    } catch (UndefinedEnvironmentVariableException e) {
-      e.printStackTrace();
-    }
+    this.client = new TwilioRestClient.Builder(appSetup.getAccountSid(), appSetup.getAuthToken()).build();
   }
 
   public MessageSender(TwilioRestClient client, AppSetup appSetup) {
@@ -33,22 +23,17 @@ public class MessageSender {
     return instance;
   }
 
-  public int sendSMS(String toNumber, String messageBody, String callbackUrl)
-      throws TwilioRestException {
-    List<NameValuePair> params = new ArrayList<NameValuePair>();
-    params.add(new BasicNameValuePair("To", toNumber));
+  public int sendSMS(String toNumber, String messageBody, String callbackUrl) {
     try {
-      params.add(new BasicNameValuePair("From", appSetup.getTwilioNumber()));
-    } catch (UndefinedEnvironmentVariableException e) {
+      new MessageCreator(
+              new PhoneNumber(toNumber),
+              new PhoneNumber(appSetup.getTwilioNumber()),
+              messageBody
+      ).setStatusCallback(callbackUrl).execute(client);
+    } catch (Exception e) {
       e.printStackTrace();
       return 1;
     }
-    params.add(new BasicNameValuePair("Body", messageBody));
-    params.add(new BasicNameValuePair("StatusCallback", callbackUrl));
-
-    MessageFactory messageFactory = client.getAccount().getMessageFactory();
-    messageFactory.create(params);
-
     return 0;
   }
 }

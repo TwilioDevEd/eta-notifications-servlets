@@ -3,7 +3,6 @@ package com.twilio.etanotifications.servlets;
 import com.twilio.etanotifications.lib.MessageSender;
 import com.twilio.etanotifications.models.Order;
 import com.twilio.etanotifications.repositories.OrdersRepository;
-import com.twilio.sdk.TwilioRestException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -44,7 +43,7 @@ public class OrderPickupServlet extends HttpServlet {
     int success = 0;
     try {
       success = messageSender.sendSMS(order.getCustomerPhoneNumber(), pickupMessage, callbackUrl);
-    } catch (TwilioRestException e) {
+    } catch (Exception e) {
       throw new ServletException(e.getLocalizedMessage());
     }
 
