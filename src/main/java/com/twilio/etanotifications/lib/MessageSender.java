@@ -29,7 +29,7 @@ public class MessageSender {
               new PhoneNumber(toNumber),
               new PhoneNumber(appSetup.getTwilioNumber()),
               messageBody
-      ).setStatusCallback(callbackUrl).execute(client);
+      ).setStatusCallback(callbackUrl).create(client);
     } catch (Exception e) {
       e.printStackTrace();
       return 1;
