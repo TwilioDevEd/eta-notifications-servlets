@@ -9,10 +9,16 @@ buildscript {
 }
 
 apply plugin: 'java'
-apply plugin: 'jetty'
 apply plugin: 'org.flywaydb.flyway'
+apply plugin: 'war'
+apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
 
-jettyRun.contextPath = '';
+gretty {
+    httpPort = 8080
+    contextPath = ''
+    logbackConfigFile = "src/main/resources/logback.xml"
+}
+
 sourceCompatibility = 1.8
 
 repositories {

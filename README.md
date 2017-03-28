@@ -4,6 +4,7 @@
 ETA notifications implementation with Java - Servlets and Twilio.
 
 ## Local Development
+
 1. Clone this repository and `cd` into it
 
 1. Create the database
@@ -12,33 +13,40 @@ ETA notifications implementation with Java - Servlets and Twilio.
    don't have it already, you should install it. The easiest way is by
    using [Postgres.app](http://postgresapp.com/)._
 
- ```bash
- $ createdb eta_notifications
+   ```bash
+   $ createdb eta_notifications
 
- ```
+   ```
 
-1. Edit the sample configuration file `.env.example` to match your configuration:
+1. Copy the sample configuration file `env.example`:
 
-   Once you have edited the `.env.example` file, if you are using a UNIX operating system,
+   ```bash
+   $ cp .env.example .env
+   ```
+
+1. Edit the sample configuration file `.env` to match your configuration:
+
+   Once you have edited the `.env` file, if you are using a UNIX operating system,
    just use the `source` command to load the variables into your environment:
 
-  ```bash
-  $ source .env.example
-  ```
+   ```bash
+   $ source .env
+   ```
 
-  _If you are using a different operating system, make sure that all the
-  variables from the `.env.example` file are loaded into your environment._
+   _If you are using a different operating system, make sure that all the
+   variables from the `.env` file are loaded into your environment._
 
-  You can find your `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` here
-  [Twilio Account Settings](https://www.twilio.com/user/account/settings).
+   You can find your `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` here
+   [Twilio Console](https://www.twilio.com/console).
 
-  You can buy Twilio phone numbers at [Twilio numbers](https://www.twilio.com/user/account/phone-numbers/search).
-  Your `TWILIO_NUMBER` should be set to a phone number you have purchased.
+   You can buy Twilio phone numbers at [Twilio numbers](https://www.twilio.com/console/phone-numbers/incoming).
+   Your `TWILIO_NUMBER` should be set to a phone number you have purchased.
 
 1. Execute the migrations.
-  ```bash
-  $ ./gradlew flywayMigrate
-  ```
+
+   ```bash
+   $ ./gradlew flywayMigrate
+   ```
 
 1. Modify seed data
 
@@ -69,13 +77,13 @@ ETA notifications implementation with Java - Servlets and Twilio.
 
 1. Run the application
 
-  ```bash
-  $ ./gradlew jettyRun
-  ```
-  Once Ngrok is running, open up your browser and go to your ngrok URL. It will
-  look like this: `http://<your_subdomain>.ngrok.io`
-
-  That's it!
+   ```bash
+   $ ./gradlew appRun
+   ```
+   Once Ngrok is running, open up your browser and go to your ngrok URL. It will
+   look like this: `http://<your_subdomain>.ngrok.io`
+ 
+   That's it!
 
 ## Expose the Application to the Wider Internet
 
