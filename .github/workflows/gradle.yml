@@ -46,16 +46,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Setup Java ${{ matrix.java }}
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java }}
+
       - name: Execute the migrations
         env:
           JDBC_URL: jdbc:postgresql://localhost:5432/eta_notifications
           DB_USERNAME: postgres
           DB_PASSWORD: postgres
         run: ./gradlew flywayMigrate
+
       - name: Build with Gradle
         env:
           JDBC_URL: jdbc:postgresql://localhost:5432/eta_notifications
@@ -65,3 +68,6 @@ jobs:
           TWILIO_AUTH_TOKEN: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
           TWILIO_NUMBER: +15552737123
         run: ./gradlew build
+
+      - name: Run tests
+        run: ./gradlew check
