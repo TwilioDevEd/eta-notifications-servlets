@@ -25,7 +25,6 @@ jobs:
         java: [ 8 ]
 
     services:
-      # label used to access the service container
       postgres:
         # Docker Hub image
         image: postgres:9.4
@@ -34,7 +33,6 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgres
         ports:
-          # maps tcp port 5432 on service container to the host
           - 5432:5432
         # set health checks to wait until postgres has started
         options: >-
