@@ -21,8 +21,27 @@ jobs:
     strategy:
       max-parallel: 3
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest]
         java: [ 8 ]
+
+    services:
+      # label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres:9.4
+        env:
+          POSTGRES_DB: eta_notifications
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        ports:
+          # maps tcp port 5432 on service container to the host
+          - 5432:5432
+        # set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout code
@@ -31,7 +50,18 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java }}
+      - name: Execute the migrations
+        env:
+          JDBC_URL: jdbc:postgresql://localhost:5432/eta_notifications
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
+        run: ./gradlew flywayMigrate
       - name: Build with Gradle
+        env:
+          JDBC_URL: jdbc:postgresql://localhost:5432/eta_notifications
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
+          TWILIO_ACCOUNT_SID: ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+          TWILIO_AUTH_TOKEN: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+          TWILIO_NUMBER: +15552737123
         run: ./gradlew build
-      - name: Run tests
-        run: ./gradlew acceptanceTest
