@@ -1,5 +1,5 @@
 # ETA Notifications for Java - Servlets
-[![Build Status](https://travis-ci.org/TwilioDevEd/eta-notifications-servlets.svg?branch=master)](https://travis-ci.org/TwilioDevEd/eta-notifications-servlets)
+[![Java Servlet CI](https://github.com/TwilioDevEd/eta-notifications-servlets/actions/workflows/gradle.yml/badge.svg)](https://github.com/TwilioDevEd/eta-notifications-servlets/actions/workflows/gradle.yml)
 
 ETA notifications implementation with Java - Servlets and Twilio.
 

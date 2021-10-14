@@ -1,0 +1,71 @@
+# This workflow will build a Java project with Gradle
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+name: Java Servlet CI
+
+on:
+  push:
+    branches: [ master ]
+    paths-ignore:
+      - '**.md'
+      - '**.json'
+  pull_request:
+    branches: [ master ]
+    paths-ignore:
+      - '**.md'
+      - '**.json'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      max-parallel: 3
+      matrix:
+        os: [ubuntu-latest]
+        java: [ 8 ]
+
+    services:
+      postgres:
+        # Docker Hub image
+        image: postgres:9.4
+        env:
+          POSTGRES_DB: eta_notifications
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        # set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Java ${{ matrix.java }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+
+      - name: Execute the migrations
+        env:
+          JDBC_URL: jdbc:postgresql://localhost:5432/eta_notifications
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
+        run: ./gradlew flywayMigrate
+
+      - name: Build with Gradle
+        env:
+          JDBC_URL: jdbc:postgresql://localhost:5432/eta_notifications
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
+          TWILIO_ACCOUNT_SID: ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+          TWILIO_AUTH_TOKEN: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+          TWILIO_NUMBER: +15552737123
+        run: ./gradlew build
+
+      - name: Run tests
+        run: ./gradlew check
