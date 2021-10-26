@@ -14,14 +14,14 @@ ETA notifications implementation with Java - Servlets and Twilio.
    using [Postgres.app](http://postgresapp.com/)._
 
    ```bash
-   $ createdb eta_notifications
+   createdb eta_notifications
 
    ```
 
 1. Copy the sample configuration file `env.example`:
 
    ```bash
-   $ cp .env.example .env
+   cp .env.example .env
    ```
 
 1. Edit the sample configuration file `.env` to match your configuration:
@@ -30,7 +30,7 @@ ETA notifications implementation with Java - Servlets and Twilio.
    just use the `source` command to load the variables into your environment:
 
    ```bash
-   $ source .env
+   source .env
    ```
 
    _If you are using a different operating system, make sure that all the
@@ -45,7 +45,7 @@ ETA notifications implementation with Java - Servlets and Twilio.
 1. Execute the migrations.
 
    ```bash
-   $ ./gradlew flywayMigrate
+   ./gradlew flywayMigrate
    ```
 
 1. Modify seed data
@@ -61,7 +61,7 @@ ETA notifications implementation with Java - Servlets and Twilio.
 1. Seed the database
 
    ```bash
-   $ ./gradlew dbSeed
+   ./gradlew dbSeed
    ```
 
 1. Expose your application to the wider internet using ngrok
@@ -72,13 +72,13 @@ ETA notifications implementation with Java - Servlets and Twilio.
    localhost.
 
    ```bash
-   $ ngrok http 8080
+   ngrok http 8080
    ```
 
 1. Run the application
 
    ```bash
-   $ ./gradlew appRun
+   ./gradlew appRun
    ```
    Once Ngrok is running, open up your browser and go to your ngrok URL. It will
    look like this: `http://<your_subdomain>.ngrok.io`
@@ -96,14 +96,14 @@ for more details on how to use ngrok, but if you are using version 2.x, exposing
 a specific port should be easily done with the following command:
 
 ```bash
-$ ngrok http 8080
+ngrok http 8080
 ```
 
 ## Run the tests
 In order to test the application, you must run the database migrations.
 
 ```bash
-$ ./gradlew check
+./gradlew check
 ```
 
 ## Meta
