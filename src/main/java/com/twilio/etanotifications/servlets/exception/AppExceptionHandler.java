@@ -1,4 +1,4 @@
-package com.twilio.blogtfa.application.servlets.exception;
+package com.twilio.etanotifications.servlets.exception;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
