@@ -1,6 +1,7 @@
 package com.twilio.etanotifications.lib;
 
 import com.twilio.etanotifications.exceptions.UndefinedEnvironmentVariableException;
+import io.github.cdimascio.dotenv.Dotenv;
 
 import java.util.Map;
 
@@ -8,14 +9,10 @@ import java.util.Map;
  * Class that holds methods to obtain configuration parameters from the environment.
  */
 public class AppSetup {
-  private Map<String, String> env;
-
-  public AppSetup() {
-    this.env = System.getenv();
-  }
+  private static final Dotenv dotenv = Dotenv.load();
 
   public String getAccountSid() throws UndefinedEnvironmentVariableException {
-    String sid = env.get("TWILIO_ACCOUNT_SID");
+    String sid = dotenv.get("TWILIO_ACCOUNT_SID");
     if (sid == null) {
       throw new UndefinedEnvironmentVariableException("TWILIO_ACCOUNT_SID is not defined");
     } else {
@@ -24,7 +21,7 @@ public class AppSetup {
   }
 
   public String getAuthToken() throws UndefinedEnvironmentVariableException {
-    String token = env.get("TWILIO_AUTH_TOKEN");
+    String token = dotenv.get("TWILIO_AUTH_TOKEN");
     if (token == null) {
       throw new UndefinedEnvironmentVariableException("TWILIO_AUTH_TOKEN is not set");
     } else {
@@ -33,7 +30,7 @@ public class AppSetup {
   }
 
   public String getTwilioNumber() throws UndefinedEnvironmentVariableException {
-    String phoneNumber = env.get("TWILIO_NUMBER");
+    String phoneNumber = dotenv.get("TWILIO_NUMBER");
     if (phoneNumber == null) {
       throw new UndefinedEnvironmentVariableException("TWILIO_NUMBER is not set");
     } else {
@@ -42,7 +39,7 @@ public class AppSetup {
   }
 
   public String getDbURL() throws UndefinedEnvironmentVariableException {
-    String url = env.get("JDBC_URL");
+    String url = dotenv.get("JDBC_URL");
     if (url == null) {
       throw new UndefinedEnvironmentVariableException("JDBC_URL is not defined");
     } else {
@@ -51,7 +48,7 @@ public class AppSetup {
   }
 
   public String getDatabaseUsername() throws UndefinedEnvironmentVariableException {
-    String username = env.get("DB_USERNAME");
+    String username = dotenv.get("DB_USERNAME");
     if (username == null) {
       throw new UndefinedEnvironmentVariableException("DB_USERNAME is not defined");
     } else {
@@ -60,7 +57,7 @@ public class AppSetup {
   }
 
   public String getDatabasePassword() {
-    String password = env.get("DB_PASSWORD");
+    String password = dotenv.get("DB_PASSWORD");
     return password != null ? password : "";
   }
 }
