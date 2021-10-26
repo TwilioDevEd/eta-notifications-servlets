@@ -56,10 +56,6 @@ jobs:
           ./gradlew flywayMigrate
 
       - name: Build with Gradle
-        env:
-          TWILIO_ACCOUNT_SID: ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-          TWILIO_AUTH_TOKEN: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-          TWILIO_NUMBER: +15552737123
         run: ./gradlew build
 
       - name: Run tests
