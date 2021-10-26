@@ -3,7 +3,28 @@
 
 ETA notifications implementation with Java - Servlets and Twilio.
 
-## Local Development
+## Setup
+
+### Requirements
+
+- [Java Development Kit](https://adoptopenjdk.net/) version 8
+- [ngrok](https://ngrok.com)
+- [PostgreSQL](https://www.postgresql.org/)
+- A Twilio account - [sign up](https://www.twilio.com/try-twilio)
+
+### Twilio Account Settings
+
+This application should give you a ready-made starting point for writing your
+own appointment reminder application. Before we begin, we need to collect
+all the config values we need to run the application:
+
+| Config Value | Description                                                                                                                                                  |
+| :---------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Account Sid  | Your primary Twilio account identifier - find this [in the Console](https://www.twilio.com/console).                                                         |
+| Auth Token   | Used to authenticate - [just like the above, you'll find this here](https://www.twilio.com/console).                                                         |
+| Phone number | A Twilio phone number in [E.164 format](https://en.wikipedia.org/wiki/E.164) - you can [get one here](https://www.twilio.com/console/phone-numbers/incoming) |
+
+### Local Development
 
 1. Clone this repository and `cd` into it
 
@@ -24,23 +45,9 @@ ETA notifications implementation with Java - Servlets and Twilio.
    cp .env.example .env
    ```
 
-1. Edit the sample configuration file `.env` to match your configuration:
+1. Edit the sample configuration file `.env` to match your configuration.
 
-   Once you have edited the `.env` file, if you are using a UNIX operating system,
-   just use the `source` command to load the variables into your environment:
-
-   ```bash
-   source .env
-   ```
-
-   _If you are using a different operating system, make sure that all the
-   variables from the `.env` file are loaded into your environment._
-
-   You can find your `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` here
-   [Twilio Console](https://www.twilio.com/console).
-
-   You can buy Twilio phone numbers at [Twilio numbers](https://www.twilio.com/console/phone-numbers/incoming).
-   Your `TWILIO_NUMBER` should be set to a phone number you have purchased.
+   See [Twilio Account Settings](#twilio-account-settings) to locate the necessary environment variables.
 
 1. Execute the migrations.
 
@@ -54,9 +61,7 @@ ETA notifications implementation with Java - Servlets and Twilio.
    the application to send sms notifications, you must edit this seed data providing
    a real phone number where you want the sms notifications to be received.
 
-   Modify the
-   [DBSeeder.java file](https://github.com/TwilioDevEd/eta-notifications-servlets/blob/master/src/main/java/com/twilio/etanotifications/DBSeeder.java)
-   that is located at: `project_root/src/main/java/com/twilio/etanotifications/DBSeeder.java`
+   Modify the [DBSeeder.java file](src/main/java/com/twilio/etanotifications/DBSeeder.java)
 
 1. Seed the database
 
@@ -85,7 +90,7 @@ ETA notifications implementation with Java - Servlets and Twilio.
  
    That's it!
 
-## Expose the Application to the Wider Internet
+### Expose the Application to the Wider Internet
 
 If you want your application to be accessible from the internet, you can either
 forward the necessary ports in your router, or use a tool like
@@ -99,7 +104,7 @@ a specific port should be easily done with the following command:
 ngrok http 8080
 ```
 
-## Run the tests
+### Run the tests
 In order to test the application, you must run the database migrations.
 
 ```bash
