@@ -8,6 +8,10 @@ buildscript {
     }
 }
 
+plugins {
+    id 'co.uzzu.dotenv.gradle' version '1.2.0'
+}
+
 apply plugin: 'java'
 apply plugin: 'org.flywaydb.flyway'
 apply plugin: 'war'
@@ -38,6 +42,7 @@ dependencies {
 
     compile "ch.qos.logback:logback-classic:${logbackVersion}"
     compile "ch.qos.logback:logback-access:${logbackVersion}"
+    compile 'io.github.cdimascio:dotenv-java:2.2.0'
 
     gretty "ch.qos.logback:logback-access:${logbackVersion}"
     gretty "ch.qos.logback:logback-classic:${logbackVersion}"
@@ -48,9 +53,9 @@ dependencies {
 }
 
 flyway {
-    user = "$System.env.DB_USERNAME"
-    password = "$System.env.DB_PASSWORD"
-    url = "$System.env.JDBC_URL"
+    user = env.DB_USERNAME.value
+    password = env.DB_PASSWORD.value
+    url = env.JDBC_URL.value
 }
 
 task dbSeed(type: JavaExec) {

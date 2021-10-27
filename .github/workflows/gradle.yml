@@ -51,20 +51,11 @@ jobs:
           java-version: ${{ matrix.java }}
 
       - name: Execute the migrations
-        env:
-          JDBC_URL: jdbc:postgresql://localhost:5432/eta_notifications
-          DB_USERNAME: postgres
-          DB_PASSWORD: postgres
-        run: ./gradlew flywayMigrate
+        run: |
+          cp .env.example .env
+          ./gradlew flywayMigrate
 
       - name: Build with Gradle
-        env:
-          JDBC_URL: jdbc:postgresql://localhost:5432/eta_notifications
-          DB_USERNAME: postgres
-          DB_PASSWORD: postgres
-          TWILIO_ACCOUNT_SID: ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-          TWILIO_AUTH_TOKEN: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-          TWILIO_NUMBER: +15552737123
         run: ./gradlew build
 
       - name: Run tests
