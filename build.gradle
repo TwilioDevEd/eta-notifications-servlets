@@ -42,7 +42,7 @@ dependencies {
 
     compile "ch.qos.logback:logback-classic:${logbackVersion}"
     compile "ch.qos.logback:logback-access:${logbackVersion}"
-    compile 'io.github.cdimascio:dotenv-java:2.2.0'
+    compile 'io.github.cdimascio:dotenv-java:2.2.3'
 
     gretty "ch.qos.logback:logback-access:${logbackVersion}"
     gretty "ch.qos.logback:logback-classic:${logbackVersion}"
