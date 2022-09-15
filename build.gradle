@@ -31,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    def logbackVersion = "1.2.2"
+    def logbackVersion = "1.4.1"
 
     compile 'javax.servlet:javax.servlet-api:3.1.0'
     compile 'javax.servlet:jstl:1.2'
